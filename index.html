@@ -20,7 +20,16 @@ const CATALOG_API_URL = 'https://script.google.com/macros/s/AKfycbzsXy8qj0UWmid2
 const state = {data:null, products:[], filtered:[], category:'', brand:'', search:'', cart:{}};
 function apiUrl(params){ const base = CATALOG_API_URL || location.href.split('?')[0]; const u = new URL(base); Object.keys(params||{}).forEach(k=>u.searchParams.set(k, params[k])); u.searchParams.set('_', Date.now()); return u.toString(); }
 function jsonp(params){ return new Promise((resolve,reject)=>{ const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2); window[cb]=d=>{delete window[cb]; s.remove(); resolve(d)}; const s=document.createElement('script'); s.src=apiUrl({...params, callback:cb}); s.onerror=()=>reject(new Error('Could not load API')); document.body.appendChild(s); }); }
-function money(n){ const c=state.data?.settings?.currency||'SRD'; return c+' '+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2}); }
+function displayPrice(usd){
+  const s=state.data?.settings||{};
+  const rate=Number(s.exchangeRateUsdToSrd||s.exchangeRate||1);
+  const roundTo=Number(s.roundDisplayPriceTo||5);
+  const raw=Number(usd||0)*rate;
+  return roundTo>0 ? Math.round(raw/roundTo)*roundTo : raw;
+}
+function moneyFromBase(n){ const c=state.data?.settings?.displayCurrency||state.data?.settings?.currency||'SRD'; return c+' '+Number(displayPrice(n)||0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}); }
+function moneyDisplay(n){ const c=state.data?.settings?.displayCurrency||state.data?.settings?.currency||'SRD'; return c+' '+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}); }
+function money(n){ return moneyFromBase(n); }
 function esc(s){ return String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m])); }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2400); }
 async function load(){ const data=await jsonp({action:'catalog'}); if(!data.ok) throw new Error(data.error||'API error'); state.data=data; state.products=data.products||[]; applySettings(); renderFilters(); filter(); }
@@ -38,11 +47,68 @@ function card(p){ return `<article class="card">${ribbons(p)}<div class="imgbox"
 function render(){ document.getElementById('stats').textContent=`${state.filtered.length} products shown · ${state.products.length} total`; document.getElementById('grid').innerHTML=state.filtered.length?state.filtered.map(card).join(''):'<div class="empty">No products found.</div>'; }
 function openProduct(id){ const p=state.products.find(x=>x.productId===id); if(!p)return; const vars=(p.variants||[]).map(v=>`<div class="variant-row"><div><div class="variant-name">${esc([v.variant,v.color].filter(Boolean).join(' / ')||v.sku)}</div><div class="variant-meta">SKU: ${esc(v.sku)} · ${esc(v.condition)} · Warranty: ${esc(v.warranty||'-')} · ${esc(v.stockStatus)} (${v.stockAvailable||0})</div></div><strong>${money(v.retailPrice)}</strong><input class="qty" type="number" min="1" value="1" id="qty_${esc(v.variantId)}"></div><button class="btn" ${v.stockAvailable<=0?'disabled':''} onclick="addToCart('${esc(p.productId)}','${esc(v.variantId)}')">Add ${esc(v.sku)}</button>`).join(''); const modal=document.createElement('div'); modal.className='modal-overlay'; modal.innerHTML=`<div class="modal-box"><div class="modal-head"><div><h2>${esc([p.brand,p.productName].filter(Boolean).join(' '))}</h2><div class="variant-meta">${esc(p.category)}${p.subcategory?' / '+esc(p.subcategory):''}</div></div><button class="xbtn" onclick="this.closest('.modal-overlay').remove()">×</button></div><div class="preview-layout"><img class="preview-image" src="${esc(p.imageUrl||'')}" onerror="this.style.display='none'"><div><p>${esc(p.description||'')}</p><div class="specs">${specsHtml(p.specs)}</div><h3>Available options</h3>${vars||'<div class="empty">No active variants.</div>'}</div></div></div>`; document.body.appendChild(modal); }
 function addToCart(pid,vid){ const p=state.products.find(x=>x.productId===pid); const v=p?.variants?.find(x=>x.variantId===vid); if(!p||!v)return; const qty=Math.max(1,Number(document.getElementById('qty_'+vid)?.value||1)); const key=vid; if(!state.cart[key]) state.cart[key]={...v, brand:p.brand, productName:p.productName, category:p.category, qty:0}; state.cart[key].qty+=qty; updateCart(); showToast('Added to cart'); }
-function updateCart(){ const items=Object.values(state.cart); const count=items.reduce((s,i)=>s+i.qty,0); const total=items.reduce((s,i)=>s+i.qty*Number(i.retailPrice||0),0); document.getElementById('cartCount').textContent=count+' item'+(count===1?'':'s'); document.getElementById('cartTotal').textContent=money(total); }
-function openCart(){ const items=Object.values(state.cart); const total=items.reduce((s,i)=>s+i.qty*Number(i.retailPrice||0),0); const d=document.createElement('div'); d.className='drawer-overlay'; d.innerHTML=`<div class="drawer"><div class="drawer-head"><div><h2>Your Cart</h2><div class="variant-meta">${items.length} selected · ${money(total)}</div></div><button class="xbtn" onclick="this.closest('.drawer-overlay').remove()">×</button></div>${items.length?items.map(i=>`<div class="cart-line"><div class="cart-line-title">${esc(i.brand)} ${esc(i.productName)}</div><div class="variant-meta">${esc(i.variant)} ${esc(i.color)} · SKU ${esc(i.sku)}</div><div class="row"><span>Qty ${i.qty} × ${money(i.retailPrice)}</span><strong>${money(i.qty*i.retailPrice)}</strong></div><button class="btn-soft" onclick="removeCart('${esc(i.variantId)}');this.closest('.drawer-overlay').remove();openCart();">Remove</button></div>`).join(''):'<div class="empty">Cart is empty.</div>'}<div class="form"><label>Name<input id="custName"></label><label>Phone<input id="custPhone"></label><label>Address / Notes<textarea id="custAddress" rows="3"></textarea></label><button class="whatsapp" ${!items.length?'disabled':''} onclick="checkoutWhatsApp()">Send WhatsApp Order</button><button class="btn-soft" onclick="clearCart();this.closest('.drawer-overlay').remove();">Clear Cart</button></div></div>`; document.body.appendChild(d); }
+function updateCart(){ const items=Object.values(state.cart); const count=items.reduce((s,i)=>s+i.qty,0); const total=items.reduce((s,i)=>s+i.qty*displayPrice(i.retailPrice),0); document.getElementById('cartCount').textContent=count+' item'+(count===1?'':'s'); document.getElementById('cartTotal').textContent=moneyDisplay(total); }
+function openCart(){ const items=Object.values(state.cart); const total=items.reduce((s,i)=>s+i.qty*displayPrice(i.retailPrice),0); const d=document.createElement('div'); d.className='drawer-overlay'; d.innerHTML=`<div class="drawer"><div class="drawer-head"><div><h2>Your Cart</h2><div class="variant-meta">${items.length} selected · ${moneyDisplay(total)}</div></div><button class="xbtn" onclick="this.closest('.drawer-overlay').remove()">×</button></div>${items.length?items.map(i=>`<div class="cart-line"><div class="cart-line-title">${esc(i.brand)} ${esc(i.productName)}</div><div class="variant-meta">${esc(i.variant)} ${esc(i.color)} · SKU ${esc(i.sku)}</div><div class="row"><span>Qty ${i.qty} × ${money(i.retailPrice)}</span><strong>${moneyDisplay(i.qty*displayPrice(i.retailPrice))}</strong></div><button class="btn-soft" onclick="removeCart('${esc(i.variantId)}');this.closest('.drawer-overlay').remove();openCart();">Remove</button></div>`).join(''):'<div class="empty">Cart is empty.</div>'}<div class="form"><label>Name<input id="custName"></label><label>Phone<input id="custPhone"></label><label>Address / Notes<textarea id="custAddress" rows="3"></textarea></label><button class="whatsapp" ${!items.length?'disabled':''} onclick="checkoutWhatsApp()">Send WhatsApp Order</button><button class="btn-soft" onclick="clearCart();this.closest('.drawer-overlay').remove();">Clear Cart</button></div></div>`; document.body.appendChild(d); }
 function removeCart(vid){ delete state.cart[vid]; updateCart(); }
 function clearCart(){ state.cart={}; updateCart(); }
-async function checkoutWhatsApp(){ const items=Object.values(state.cart); if(!items.length)return; const name=document.getElementById('custName').value.trim(); const phone=document.getElementById('custPhone').value.trim(); const address=document.getElementById('custAddress').value.trim(); const total=items.reduce((s,i)=>s+i.qty*Number(i.retailPrice||0),0); const payload={customerName:name,customerPhone:phone,customerAddress:address,total,currency:state.data.settings.currency,source:'Public Catalog',items:items.map(i=>({sku:i.sku,productId:i.productId,variantId:i.variantId,brand:i.brand,productName:i.productName,variant:i.variant,color:i.color,qty:i.qty,price:i.retailPrice,subtotal:i.qty*i.retailPrice}))}; try{ await jsonp({action:'logOrder',payload:JSON.stringify(payload)}); }catch(e){} const lines=['Hi, I am interested in ordering these electronics items:','']; items.forEach((i,n)=>lines.push(`${n+1}. ${i.brand} ${i.productName} - ${i.variant||''} ${i.color||''}\nSKU: ${i.sku}\nQty: ${i.qty}\nPrice: ${money(i.retailPrice)}\nSubtotal: ${money(i.qty*i.retailPrice)}`)); lines.push('',`Total: ${money(total)}`); if(name)lines.push(`Name: ${name}`); if(phone)lines.push(`Phone: ${phone}`); if(address)lines.push(`Address/Notes: ${address}`); const wa=String(state.data.settings.whatsappNumber||'').replace(/\D/g,''); window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(lines.join('\n')),'_blank'); }
+function checkoutWhatsApp(){
+  const items=Object.values(state.cart);
+  if(!items.length)return;
+
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const address=document.getElementById('custAddress').value.trim();
+  const total=items.reduce((s,i)=>s+i.qty*displayPrice(i.retailPrice),0);
+
+  const payload={
+    customerName:name,
+    customerPhone:phone,
+    customerAddress:address,
+    total,
+    currency:state.data.settings.displayCurrency||state.data.settings.currency,
+    baseCurrency:state.data.settings.baseCurrency||'USD',
+    exchangeRateUsdToSrd:Number(state.data.settings.exchangeRateUsdToSrd||1),
+    source:'Public Catalog',
+    items:items.map(i=>({
+      sku:i.sku,
+      productId:i.productId,
+      variantId:i.variantId,
+      brand:i.brand,
+      productName:i.productName,
+      variant:i.variant,
+      color:i.color,
+      qty:i.qty,
+      basePrice:i.retailPrice,
+      displayPrice:displayPrice(i.retailPrice),
+      price:displayPrice(i.retailPrice),
+      subtotal:i.qty*displayPrice(i.retailPrice)
+    }))
+  };
+
+  const lines=['Hi, I am interested in ordering these electronics items:',''];
+  items.forEach((i,n)=>lines.push(`${n+1}. ${i.brand} ${i.productName} - ${i.variant||''} ${i.color||''}
+SKU: ${i.sku}
+Qty: ${i.qty}
+Price: ${moneyFromBase(i.retailPrice)}
+Subtotal: ${moneyDisplay(i.qty*displayPrice(i.retailPrice))}`));
+  lines.push('',`Total: ${moneyDisplay(total)}`);
+  if(name)lines.push(`Name: ${name}`);
+  if(phone)lines.push(`Phone: ${phone}`);
+  if(address)lines.push(`Address/Notes: ${address}`);
+
+  const wa=String(state.data.settings.whatsappNumber||'').replace(/\D/g,'');
+  const waUrl='https://wa.me/'+wa+'?text='+encodeURIComponent(lines.join('\n'));
+
+  // Open WhatsApp immediately. Do not wait for Apps Script.
+  window.open(waUrl,'_blank');
+
+  // Log in the background after the browser has already opened WhatsApp.
+  setTimeout(()=>{
+    jsonp({action:'logOrder',payload:JSON.stringify(payload)})
+      .then(()=>console.log('Order logged'))
+      .catch(err=>console.warn('Order log failed:',err));
+  },50);
+}
 load().catch(err=>{document.getElementById('stats').textContent='Error: '+err.message;});
 </script>
 </body>
