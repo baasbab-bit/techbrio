@@ -3,14 +3,78 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Electronics Admin</title>
 <style>
-:root{--theme:#0F172A;--accent:#2563EB;--bg:#F8FAFC;--card:#fff;--text:#111827;--muted:#64748B;--line:#E2E8F0;--ok:#047857;--warn:#B45309;--danger:#B91C1C}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}header{background:linear-gradient(135deg,var(--theme),#020617);color:white;padding:20px 16px 24px;border-bottom:4px solid var(--accent)}.wrap{max-width:1200px;margin:0 auto}h1{margin:0;font-size:24px}.subtitle{color:#CBD5E1;font-size:13px}.login{max-width:440px;margin:30px auto;background:white;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 16px 38px rgba(15,23,42,.08)}input,select,button,textarea{font:inherit;border:1px solid var(--line);border-radius:12px;padding:10px 11px;background:white}button{cursor:pointer;font-weight:900}.btn{border:none;background:var(--theme);color:white}.btn-ok{border:none;background:#16A34A;color:white}.btn-soft{background:#F1F5F9;color:#334155;border:1px solid var(--line)}.btn-danger{background:#FEF2F2;color:var(--danger);border:1px solid #FECACA}.toolbar{position:sticky;top:0;z-index:20;background:white;border-bottom:1px solid var(--line);padding:12px 16px;box-shadow:0 8px 20px rgba(15,23,42,.04)}.toolbar-grid{display:grid;grid-template-columns:1fr 190px 150px 150px auto auto;gap:10px;align-items:center}.savebar{position:sticky;top:73px;z-index:18;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 16px;display:none}.save-inner{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.dirty{color:var(--warn);font-weight:900}main{padding:18px 16px 100px}.status{color:var(--muted);font-size:13px;margin:0 0 12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.group{background:white;border:1px solid var(--line);border-radius:20px;margin-bottom:12px;box-shadow:0 8px 22px rgba(15,23,42,.05);overflow:hidden}.group-head{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--line);cursor:pointer}.thumb{width:76px;height:76px;object-fit:cover;border-radius:14px;background:#E5E7EB;border:1px solid var(--line)}.title{font-weight:950}.meta{color:var(--muted);font-size:12px;margin-top:4px}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.badge{border-radius:999px;padding:5px 8px;background:#F1F5F9;color:#334155;font-size:11px;font-weight:900}.badge.warn{background:#FFFBEB;color:var(--warn);border:1px solid #FDE68A}.body{padding:12px;background:#F8FAFC}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.field{display:grid;gap:5px}.field label{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase}.wide{grid-column:span 2}.full{grid-column:1/-1}.variant{background:white;border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px}.variant.dirty,.group.dirty{border-color:rgba(180,83,9,.55);box-shadow:0 10px 26px rgba(180,83,9,.12)}.variant-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}.stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.modal{position:fixed;inset:0;background:rgba(15,23,42,.72);display:flex;align-items:center;justify-content:center;padding:16px;z-index:200}.box{width:min(96vw,760px);max-height:88vh;overflow:auto;background:white;border-radius:22px;padding:18px}.box-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px}.xbtn{border:1px solid var(--line);background:#F8FAFC;border-radius:999px;padding:8px 11px}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0F172A;color:white;padding:12px 14px;border-radius:14px;box-shadow:0 18px 40px rgba(15,23,42,.28);z-index:100;display:none;max-width:min(92vw,460px)}.empty{text-align:center;color:var(--muted);padding:40px 16px;border:1px dashed var(--line);border-radius:18px;background:white}@media(max-width:900px){.toolbar-grid{grid-template-columns:1fr 1fr}.toolbar-grid input{grid-column:1/-1}.grid{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.savebar{top:130px}}@media(max-width:560px){.toolbar{padding:10px 8px}.toolbar-grid{grid-template-columns:1fr}.savebar{top:218px}.grid,.stock-grid{grid-template-columns:1fr}.group-head{grid-template-columns:58px 1fr auto}.thumb{width:58px;height:58px}main{padding:12px 8px 90px}.wide{grid-column:1/-1}}
+:root{--theme:#0F172A;--accent:#2563EB;--bg:#F8FAFC;--card:#fff;--text:#111827;--muted:#64748B;--line:#E2E8F0;--ok:#047857;--warn:#B45309;--danger:#B91C1C}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}header{background:linear-gradient(135deg,var(--theme),#020617);color:white;padding:20px 16px 24px;border-bottom:4px solid var(--accent)}.wrap{max-width:1200px;margin:0 auto}h1{margin:0;font-size:24px}.subtitle{color:#CBD5E1;font-size:13px}.login{max-width:440px;margin:30px auto;background:white;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 16px 38px rgba(15,23,42,.08)}input,select,button,textarea{font:inherit;border:1px solid var(--line);border-radius:12px;padding:10px 11px;background:white}button{cursor:pointer;font-weight:900}.btn{border:none;background:var(--theme);color:white}.btn-ok{border:none;background:#16A34A;color:white}.btn-soft{background:#F1F5F9;color:#334155;border:1px solid var(--line)}.btn-danger{background:#FEF2F2;color:var(--danger);border:1px solid #FECACA}.toolbar{position:sticky;top:0;z-index:20;background:white;border-bottom:1px solid var(--line);padding:12px 16px;box-shadow:0 8px 20px rgba(15,23,42,.04)}.toolbar-grid{display:grid;grid-template-columns:1fr 190px 150px 150px auto auto;gap:10px;align-items:center}.savebar{position:sticky;top:73px;z-index:18;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 16px;display:none}.save-inner{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.dirty{color:var(--warn);font-weight:900}main{padding:18px 16px 100px}.status{color:var(--muted);font-size:13px;margin:0 0 12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.group{background:white;border:1px solid var(--line);border-radius:20px;margin-bottom:12px;box-shadow:0 8px 22px rgba(15,23,42,.05);overflow:hidden}.group-head{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--line);cursor:pointer}.thumb{width:76px;height:76px;object-fit:cover;border-radius:14px;background:#E5E7EB;border:1px solid var(--line)}.title{font-weight:950}.meta{color:var(--muted);font-size:12px;margin-top:4px}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.badge{border-radius:999px;padding:5px 8px;background:#F1F5F9;color:#334155;font-size:11px;font-weight:900}.badge.warn{background:#FFFBEB;color:var(--warn);border:1px solid #FDE68A}.body{padding:12px;background:#F8FAFC}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.field{display:grid;gap:5px}.field label{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase}.wide{grid-column:span 2}.full{grid-column:1/-1}.variant{background:white;border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px}.variant.dirty,.group.dirty{border-color:rgba(180,83,9,.55);box-shadow:0 10px 26px rgba(180,83,9,.12)}.variant-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}.stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.modal{position:fixed;inset:0;background:rgba(15,23,42,.72);display:flex;align-items:center;justify-content:center;padding:16px;z-index:200}.box{width:min(98vw,1100px);max-height:88vh;overflow:auto;background:white;border-radius:22px;padding:18px}.box-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px}.xbtn{border:1px solid var(--line);background:#F8FAFC;border-radius:999px;padding:8px 11px}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0F172A;color:white;padding:12px 14px;border-radius:14px;box-shadow:0 18px 40px rgba(15,23,42,.28);z-index:100;display:none;max-width:min(92vw,460px)}.empty{text-align:center;color:var(--muted);padding:40px 16px;border:1px dashed var(--line);border-radius:18px;background:white}.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.settings-grid .field.wide{grid-column:1/-1}.settings-grid input,.settings-grid select,.settings-grid textarea{width:100%;min-width:0}.settings-actions{position:sticky;bottom:0;background:white;padding-top:14px;margin-top:14px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap}@media(max-width:900px){.settings-grid{grid-template-columns:1fr}}@media(max-width:900px){.toolbar-grid{grid-template-columns:1fr 1fr}.toolbar-grid input{grid-column:1/-1}.grid{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.savebar{top:130px}}@media(max-width:560px){.toolbar{padding:10px 8px}.toolbar-grid{grid-template-columns:1fr}.savebar{top:218px}.grid,.stock-grid{grid-template-columns:1fr}.group-head{grid-template-columns:58px 1fr auto}.thumb{width:58px;height:58px}main{padding:12px 8px 90px}.wide{grid-column:1/-1}}
+
+.legacy-import-grid{display:grid;gap:12px}
+.legacy-import-help{background:#F8FAFC;border:1px solid var(--line);border-radius:16px;padding:12px;color:#475569;font-size:13px;line-height:1.45}
+.legacy-import-help code{background:#E2E8F0;border-radius:6px;padding:2px 5px}
+.legacy-import-textarea{width:100%;min-height:260px;font-family:Consolas,monospace;font-size:12px;white-space:pre;overflow:auto}
+.legacy-preview{max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff}
+.legacy-preview table{width:100%;border-collapse:collapse;font-size:12px}
+.legacy-preview th,.legacy-preview td{border-bottom:1px solid var(--line);padding:8px;text-align:left;white-space:nowrap}
+.legacy-preview th{position:sticky;top:0;background:#F8FAFC;z-index:1}
+.legacy-result{display:none;border-radius:14px;padding:10px;font-size:13px}
+.legacy-result.ok{display:block;background:#ECFDF5;border:1px solid #BBF7D0;color:#166534}
+.legacy-result.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#991B1B}
+
+
+.import-processing-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:blur(4px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  border-radius:22px;
+}
+.import-processing-card{
+  display:grid;
+  place-items:center;
+  gap:10px;
+  text-align:center;
+  background:#FFFFFF;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px 20px;
+  box-shadow:0 18px 50px rgba(15,23,42,.16);
+  max-width:320px;
+}
+.import-spinner{
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  border:4px solid #E2E8F0;
+  border-top-color:var(--theme);
+  animation:spinImport .8s linear infinite;
+}
+@keyframes spinImport{to{transform:rotate(360deg)}}
+.import-processing-title{
+  font-weight:950;
+  color:var(--text);
+}
+.import-processing-sub{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.35;
+}
+.modal.import-busy .import-processing-overlay{
+  display:flex;
+}
+.modal.import-busy textarea,
+.modal.import-busy select,
+.modal.import-busy button{
+  pointer-events:none;
+}
+
 </style>
 </head><body>
 <header><div class="wrap"><h1>Electronics Catalog Admin</h1><p class="subtitle">Manage products, variants, prices, stock balances and visibility.</p></div></header>
 <section id="loginPanel" class="wrap"><div class="login"><h2>Admin Login</h2><p class="meta">Enter the admin key. Leave blank only while testing if your backend has no key set.</p><input id="key" type="password" placeholder="Admin access key" style="width:100%;margin:10px 0"><button class="btn" style="width:100%" onclick="login()">Unlock Admin</button><div id="loginErr" class="meta" style="color:var(--danger);margin-top:10px"></div></div></section>
-<section id="app" style="display:none"><div class="toolbar"><div class="wrap toolbar-grid"><input id="search" placeholder="Search brand, product, SKU..."><select id="cat"><option value="">All categories</option></select><select id="brand"><option value="">All brands</option></select><select id="stock"><option value="">All stock</option><option value="available">Available</option><option value="low">Low stock</option><option value="sold">Sold out</option></select><button class="btn" onclick="openCreate()">+ New Product</button><button class="btn-soft" onclick="openSettings()">Settings</button></div></div><div id="savebar" class="savebar"><div class="wrap save-inner"><div class="dirty" id="dirtyText">Unsaved changes</div><div><button class="btn-soft" onclick="discardChanges()">Discard</button> <button class="btn-ok" onclick="saveAll()">Save All Changes</button></div></div></div><main class="wrap"><div class="status"><span id="status">Loading...</span><span><button class="btn-soft" onclick="reload(true)">Refresh</button> <button class="btn-soft" onclick="clearCache()">Clear Cache</button></span></div><div id="list"></div></main></section><div id="toast" class="toast"></div>
+<section id="app" style="display:none"><div class="toolbar"><div class="wrap toolbar-grid"><input id="search" placeholder="Search brand, product, SKU..."><select id="cat"><option value="">All categories</option></select><select id="brand"><option value="">All brands</option></select><select id="stock"><option value="">All stock</option><option value="available">Available</option><option value="low">Low stock</option><option value="sold">Sold out</option></select><button class="btn" onclick="openCreate()">+ New Product</button><button class="btn-soft" onclick="openSettings()">Settings</button><button class="btn-soft" onclick="openLegacyImport()">Import Legacy</button></div></div><div id="savebar" class="savebar"><div class="wrap save-inner"><div class="dirty" id="dirtyText">Unsaved changes</div><div><button class="btn-soft" onclick="discardChanges()">Discard</button> <button class="btn-ok" onclick="saveAll()">Save All Changes</button></div></div></div><main class="wrap"><div class="status"><span id="status">Loading...</span><span><button class="btn-soft" onclick="reload(true)">Refresh</button> <button class="btn-soft" onclick="clearCache()">Clear Cache</button></span></div><div id="list"></div></main></section><div id="toast" class="toast"></div>
 <script>
-const CATALOG_API_URL = 'https://script.google.com/macros/s/AKfycbzsXy8qj0UWmid2K-3MOl-dAT7jYjuRKY5Iw4Q0EoY7rA2b_l87-cBbeBiYFwY4hY851A/exec'; // Paste Apps Script web app /exec URL here if hosted outside Apps Script.
+const CATALOG_API_URL = 'https://script.google.com/macros/s/AKfycbzsXy8qj0UWmid2K-3MOl-dAT7jYjuRKY5Iw4Q0EoY7rA2b_l87-cBbeBiYFwY4hY851A/exec';
 const state={key:'',data:null,products:[],filtered:[],dirtyProducts:{},dirtyVariants:{},dirtyBalances:{}};
 function apiUrl(params){const base=CATALOG_API_URL||location.href.split('?')[0];const u=new URL(base);Object.keys(params||{}).forEach(k=>u.searchParams.set(k,params[k]));u.searchParams.set('_',Date.now());return u.toString();}
 function jsonp(params){return new Promise((res,rej)=>{const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);window[cb]=d=>{delete window[cb];s.remove();res(d)};const s=document.createElement('script');s.src=apiUrl({...params,callback:cb,key:state.key});s.onerror=()=>rej(new Error('Could not load API'));document.body.appendChild(s);});}
@@ -76,7 +140,7 @@ async function openSettings(){
 
   const d=document.createElement('div');
   d.className='modal';
-  d.innerHTML=`<div class="box"><div class="box-head"><div><h2>Store Settings</h2><div class="meta">Edit branding, currency, exchange rate, WhatsApp number, stock rules, and checkout behavior.</div></div><button class="xbtn" onclick="this.closest('.modal').remove()">×</button></div><div class="grid">${rows.map(settingInputHtml).join('')}</div><p style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-ok" onclick="saveSettings(this)">Save Settings</button><button class="btn-soft" onclick="this.closest('.modal').remove()">Cancel</button></p></div>`;
+  d.innerHTML=`<div class="box"><div class="box-head"><div><h2>Store Settings</h2><div class="meta">Edit branding, currency, exchange rate, WhatsApp number, stock rules, and checkout behavior.</div></div><button class="xbtn" onclick="this.closest('.modal').remove()">×</button></div><div class="settings-grid">${rows.map(settingInputHtml).join('')}</div><div class="settings-actions"><button class="btn-ok" onclick="saveSettings(this)">Save Settings</button><button class="btn-soft" onclick="this.closest('.modal').remove()">Cancel</button></div></div>`;
   document.body.appendChild(d);
 }
 
@@ -93,6 +157,87 @@ async function saveSettings(btn){
   modal.remove();
   toast('Settings saved');
   await reload(true);
+}
+
+
+function parseLegacyTableText(text){
+  const clean = String(text || '').trim();
+  if(!clean) return [];
+  const lines = clean.split(/\r?\n/).filter(line => line.trim() !== '');
+  if(lines.length < 2) return [];
+  const delimiter = lines[0].includes('\t') ? '\t' : ';';
+  const headers = lines[0].split(delimiter).map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const parts = line.split(delimiter);
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = (parts[i] || '').trim());
+    return obj;
+  }).filter(row => Object.values(row).some(v => String(v || '').trim() !== ''));
+}
+function legacyPreviewHtml(rows){
+  if(!rows.length) return '<div class="empty">Paste rows copied from the legacy Excel sheet to preview them here.</div>';
+  const headers = Object.keys(rows[0] || {});
+  const sample = rows.slice(0, 8);
+  return '<table><thead><tr>' + headers.map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' +
+    sample.map(row => '<tr>' + headers.map(h => '<td>' + esc(row[h] || '') + '</td>').join('') + '</tr>').join('') +
+    '</tbody></table>';
+}
+function openLegacyImport(){
+  const d = document.createElement('div');
+  d.className = 'modal';
+  d.innerHTML = `<div class="box"><div class="box-head"><div><h2>Import Legacy Product Sheet</h2><div class="meta">Paste rows copied directly from the old Excel format. The import maps MERK, CATEGORIE, SKU, MODEL/OMSCHRIJVING, KLEUR, stock columns and prices into the current catalog structure.</div></div><button class="xbtn" onclick="this.closest('.modal').remove()">×</button></div><div class="legacy-import-grid"><div class="legacy-import-help"><strong>How to use:</strong><br>1. Open the legacy Excel sheet.<br>2. Select the header row and product rows.<br>3. Copy and paste below.<br>4. Use <strong>Upsert</strong> to update existing SKUs and add new ones. Existing prices are preserved if the imported value is blank or 0.<br><br>Expected headers include: <code>MERK</code>, <code>UPC</code>, <code>CATEGORIE</code>, <code>SUB CATEGORIE</code>, <code>SKU</code>, <code>MODEL/OMSCHRIJVING</code>, <code>KLEUR</code>, <code>MAGAZIJN</code>, <code>CM</code>, <code>SAR</code>, <code>VERK</code>, <code>V+BTW</code>, <code>WS</code>, <code>WS+BTW</code>.</div><label class="field"><span>Import Mode</span><select id="legacyImportMode"><option value="upsert">Upsert by SKU</option><option value="append">Append only</option></select></label><label class="field"><span>Paste Legacy Rows</span><textarea id="legacyImportText" class="legacy-import-textarea" placeholder="Paste copied Excel rows here..."></textarea></label><div><button class="btn-soft" onclick="previewLegacyImport()">Preview</button> <button class="btn-ok" onclick="submitLegacyImport(this)">Import Products</button></div><div id="legacyImportResult" class="legacy-result"></div><div id="legacyImportPreview" class="legacy-preview"><div class="empty">Paste rows copied from the legacy Excel sheet to preview them here.</div></div></div></div>`;
+  document.body.appendChild(d);
+  d.querySelector('#legacyImportText').addEventListener('input', previewLegacyImport);
+}
+function previewLegacyImport(){
+  const text = document.getElementById('legacyImportText')?.value || '';
+  const rows = parseLegacyTableText(text);
+  const preview = document.getElementById('legacyImportPreview');
+  if(preview) preview.innerHTML = legacyPreviewHtml(rows);
+}
+async function submitLegacyImport(btn){
+  const text = document.getElementById('legacyImportText')?.value || '';
+  const mode = document.getElementById('legacyImportMode')?.value || 'upsert';
+  const resultBox = document.getElementById('legacyImportResult');
+  const rows = parseLegacyTableText(text);
+  if(!rows.length){
+    resultBox.className = 'legacy-result err';
+    resultBox.textContent = 'No valid rows found. Make sure you copied the header row and product rows from Excel.';
+    return;
+  }
+  const modal = btn.closest('.modal');
+  if(modal) modal.classList.add('import-busy');
+  btn.disabled = true;
+  btn.textContent = 'Importing...';
+  resultBox.className = 'legacy-result ok';
+  resultBox.textContent = 'Import started. Please wait while the system writes products, variants and stock balances...';
+  try {
+    const res = await jsonp({ action:'adminImportLegacyProducts', payload:JSON.stringify({mode, rows}) });
+    if(!res.ok) throw new Error(res.error || 'Import failed.');
+    resultBox.className = 'legacy-result ok';
+    const failures = res.failed || [];
+
+    resultBox.textContent =
+      `Import completed successfully.\n\n` +
+      `${res.processed} product records processed.\n` +
+      `• ${res.updated} existing products updated\n` +
+      `• ${res.imported} new products added\n` +
+      `• ${res.skipped} skipped\n` +
+      `• ${failures.length} failed` +
+      (failures.length
+        ? '\n\nIssues detected:\n' + failures.slice(0,5).map(f => `• Row ${f.row}: ${f.error}`).join('\n')
+        : '\n\nPricing and inventory data synchronized successfully.'
+      );
+
+    await reload(true);
+  } catch(err) {
+    resultBox.className = 'legacy-result err';
+    resultBox.textContent = err.message || String(err);
+  } finally {
+    if(modal) modal.classList.remove('import-busy');
+    btn.disabled = false;
+    btn.textContent = 'Import Products';
+  }
 }
 
 </script></body></html>
